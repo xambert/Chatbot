@@ -1,0 +1,102 @@
+.landing-container {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section {
+  text-align: center;
+  color: white;
+  z-index: 1;
+}
+
+.app-title {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: 0;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+}
+
+.app-subtitle {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin: 0;
+  opacity: 0.9;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Chat Launcher Button - styled like the MooGold Support widget */
+.chat-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  background: #4A5FE7;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(74, 95, 231, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.chat-launcher:hover {
+  background: #3B4BD9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 95, 231, 0.4);
+}
+
+.chat-launcher:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(74, 95, 231, 0.3);
+}
+
+.chat-icon {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-title {
+    font-size: 2.5rem;
+  }
+  
+  .app-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .chat-launcher {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 2rem;
+  }
+  
+  .app-subtitle {
+    font-size: 1rem;
+  }
+}

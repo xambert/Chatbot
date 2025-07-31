@@ -1,0 +1,242 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Bower dependency directory (https://bower.io/)
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.test
+.env.production
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Angular
+.angular/
+.sass-cache/
+.browserslistrc
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+backend/chatbot.db
+backend/*.db
+
+# Logs
+logs/
+*.log
+
+# Runtime files
+*.sock
+
+# Build artifacts
+build/
+dist/
+
+# Package files
+*.tar.gz
+*.zip
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Webpack bundle analysis
+bundle-report.html
+
+# Generated files
+*.generated.ts
+*.generated.js
+
+# Test files
+/coverage
+/e2e/reports/
+
+# Angular specific
+/.angular/cache
+
+# Local development
+.env.development
+.env.development.local
+
+# Production
+.env.production
+.env.production.local
+
+# WebSocket/LLM Integration
+llm-config.json
+openai-key.txt
+claude-key.txt
+
+# Chat History Exports
+chat-exports/
+history-backup/
+
+# SSL Certificates (if used)
+*.pem
+*.crt
+*.key
+*.p12
+
+# PM2 process manager
+.pm2/
+
+# AWS/Cloud deployment
+.aws/
+.gcp/
+.azure/
+
+# Docker
+Dockerfile.prod
+docker-compose.override.yml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Local configuration
+config.local.json
+local-settings.json
+
+# Sensitive files
+secrets/
+keys/
+certs/
+
+# Build tools
+.grunt/
+.cache/
+.eslintcache
+.stylelintcache
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+*.lnk
+desktop.ini
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# macOS
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
