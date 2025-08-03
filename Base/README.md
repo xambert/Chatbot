@@ -1,23 +1,28 @@
 # AI Chatbot with SQLAlchemy Database Support
 
-A modern, professional chatbot application with Angular frontend and Python Flask backend, featuring advanced AI integration and multi-database support.
+A modern, professional chatbot application with Angular frontend and Python Flask backend, featuring advanced AI integration, custom LLM WebSocket support, and multi-database compatibility.
 
 ## 🚀 Features
 
-- **Advanced AI Integration** - Configurable AI modes with enhanced reasoning capabilities
+- **Custom LLM Integration** - WebSocket connection to your own LLM service with persistent connections
+- **Advanced AI Modes** - Configurable AI with enhanced reasoning capabilities  
 - **Multi-Database Support** - Easy switching between SQLite, PostgreSQL, and MySQL
 - **Modern UI** - Angular 17+ with Material Design components
-- **Real-time Chat** - Interactive messaging with typing indicators
+- **Real-time Chat** - Interactive messaging with typing indicators and auto-scroll
 - **Tool Management** - Built-in tools panel with prompt suggestions
 - **Session Management** - Persistent chat sessions and history
+- **Separate Message Storage** - User messages and AI responses stored as separate records
 - **API-First Design** - Complete REST API for all operations
 - **Responsive Design** - Works seamlessly on desktop and mobile
+- **Health Monitoring** - Built-in health checks for LLM and database services
+- **Fallback System** - Automatic fallback responses when LLM is unavailable
 
 ## 📋 Prerequisites
 
 - **Python 3.11+** 
 - **Node.js 18+**
 - **npm or yarn**
+- **Your Custom LLM WebSocket Server** (optional - fallback responses available)
 
 ## 🛠️ Installation & Setup
 
@@ -38,9 +43,9 @@ venv\Scripts\activate          # Windows
 cd backend
 pip install -r requirements.txt
 
-# Configure environment (optional)
+# Configure environment
 cp .env.example .env
-# Edit .env with your database settings
+# Edit .env with your database and LLM settings (see Configuration section)
 ```
 
 ### 3. Frontend Setup (Angular)
@@ -50,27 +55,184 @@ cd Frontend
 npm install
 ```
 
+## ⚙️ Configuration
+
+### Database Configuration
+Edit `.env` to configure your database:
+
+```bash
+# SQLite (Default - no setup required)
+DATABASE_URL=sqlite:///./chatbot.db
+
+# PostgreSQL
+DATABASE_URL=postgresql://username:password@localhost:5432/chatbot
+
+# MySQL
+DATABASE_URL=mysql+pymysql://username:password@localhost:3306/chatbot
+```
+
+### Custom LLM WebSocket Configuration
+Configure your custom LLM service in `.env`:
+
+```bash
+# Your Custom LLM WebSocket Settings
+LLM_WEBSOCKET_URL=ws://your-llm-server:8080/chat    # Required: Your LLM WebSocket URL
+LLM_API_KEY=your-api-key-here                       # Optional: Leave empty if no auth needed
+LLM_MODEL_NAME=your-custom-model                    # Optional: Default is 'custom-model'
+LLM_TIMEOUT=30                                      # Optional: Request timeout in seconds
+LLM_MAX_RETRIES=3                                   # Optional: Max retry attempts
+
+# LLM Response Settings
+LLM_MAX_TOKENS=4000                                 # Optional: Max tokens per response
+LLM_TEMPERATURE=0.7                                 # Optional: Response creativity (0.0-1.0)
+```
+
+**Note:** If `LLM_API_KEY` is empty or not set, no authentication headers will be sent to your LLM service.
+
 ## 🚀 Running the Application
 
-### Start Backend Server
+### Option 1: With Your Custom LLM (Recommended)
+
+#### Step 1: Start Your LLM WebSocket Server
+Make sure your custom LLM WebSocket server is running and accessible at the URL specified in `.env`.
+
+#### Step 2: Start Backend Server
 ```bash
 cd backend
 python app.py
 # Backend runs on http://localhost:3001
 ```
 
-### Start Frontend Server
+#### Step 3: Start Frontend Server
 ```bash
 cd Frontend
 ng serve
 # Frontend runs on http://localhost:4200
 ```
 
-### Quick Start (Both Servers)
+### Option 2: Testing Mode (Mock LLM Server)
+
+For testing without your actual LLM service:
+
+#### Step 1: Start Mock LLM Server
 ```bash
-# From root directory
+cd backend
+python mock_llm_server.py
+# Mock LLM server runs on ws://localhost:8080/chat
+```
+
+#### Step 2: Update .env for testing
+```bash
+LLM_WEBSOCKET_URL=ws://localhost:8080/chat
+LLM_API_KEY=
+```
+
+#### Step 3: Start Backend & Frontend
+```bash
+# Terminal 1: Backend
+cd backend
+python app.py
+
+# Terminal 2: Frontend  
+cd Frontend
+ng serve
+```
+
+### Option 3: Quick Start (All Services)
+```bash
+# From root directory (starts frontend + backend only)
 npm run dev
 ```
+
+### 🔍 Verify Everything is Working
+
+1. **Backend Health**: Visit `http://localhost:3001/health`
+2. **LLM Health**: Visit `http://localhost:3001/api/llm/health`  
+3. **Frontend**: Visit `http://localhost:4200`
+
+## ✅ Recent Fixes & Improvements
+
+### LLM Connection Stability (Fixed)
+- **Issue**: WebSocket connections were closing after each health check
+- **Solution**: Improved connection management with persistent connections
+- **Status**: ✅ **FIXED** - Health checks now maintain stable connections
+
+### Message Storage Enhancement (Fixed)
+- **Issue**: AI responses weren't stored as separate database records
+- **Solution**: 
+  - Added `is_user` boolean field to distinguish user messages from AI responses
+  - Modified chat endpoint to create separate message records for users and AI
+  - Updated database schema with proper message tracking
+- **Status**: ✅ **FIXED** - Both user and AI messages are now stored separately
+
+### Fallback System Reliability (Enhanced)
+- **Issue**: No graceful handling when LLM service is unavailable
+- **Solution**: Robust fallback system with context-aware responses
+- **Status**: ✅ **ENHANCED** - Automatic fallback responses ensure uninterrupted service
+
+### API Response Format (Improved)
+- **Issue**: Inconsistent API response structures
+- **Solution**: Standardized response format with proper error handling
+- **Status**: ✅ **IMPROVED** - All endpoints now return consistent JSON responses
+
+## 🤖 Custom LLM Integration
+
+### Your LLM WebSocket Protocol
+
+Your LLM server should accept JSON messages in this format:
+
+```json
+{
+    "message": "User's question here",
+    "model": "your-model-name",
+    "metadata": {
+        "sql_mode": true,
+        "advanced_ai": false,
+        "session_context": {}
+    },
+    "settings": {
+        "max_tokens": 4000,
+        "temperature": 0.7,
+        "stream": false
+    }
+}
+```
+
+And return responses like:
+
+```json
+{
+    "response": "LLM generated response",
+    "tokens_used": 150,
+    "model": "your-model-name", 
+    "finish_reason": "completed",
+    "metadata": {}
+}
+```
+
+### Adapting to Your LLM Format
+
+If your LLM uses different field names, modify `backend/llm_websocket.py`:
+
+```python
+# In _process_response() method:
+def _process_response(self, response_data):
+    # Change these field names to match your LLM:
+    content = response_data.get('your_response_field')
+    tokens_used = response_data.get('your_tokens_field')
+    
+    return {
+        'content': content,
+        'tokens_used': tokens_used,
+        # ... other fields
+    }
+```
+
+### Fallback Behavior
+
+- **Primary**: Uses your custom LLM WebSocket
+- **Fallback**: If LLM is unavailable, shows helpful fallback messages
+- **Error Handling**: Automatic retries with exponential backoff
 
 ## 🗄️ Database Configuration
 
@@ -108,6 +270,37 @@ Check if the backend is running and database is connected.
   "status": "healthy",
   "timestamp": "2025-08-03T12:00:00.000000",
   "database": "connected"
+}
+```
+
+#### GET `/api/llm/health`
+Check if your custom LLM WebSocket service is healthy and connected.
+
+**Response (Healthy):**
+```json
+{
+  "success": true,
+  "llm_service": {
+    "status": "healthy",
+    "connected": true,
+    "url": "ws://localhost:8080/chat",
+    "model": "custom-model"
+  },
+  "timestamp": "2025-08-03T12:00:00.000000"
+}
+```
+
+**Response (Unhealthy):**
+```json
+{
+  "success": false,
+  "error": "Connection refused",
+  "llm_service": {
+    "status": "unhealthy", 
+    "connected": false,
+    "error": "Failed to connect to LLM WebSocket"
+  },
+  "timestamp": "2025-08-03T12:00:00.000000"
 }
 ```
 

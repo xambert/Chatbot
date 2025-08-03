@@ -6,6 +6,8 @@ import os
 from datetime import datetime
 import time
 import random
+import asyncio
+from llm_websocket import send_to_llm, generate_fallback_response, check_llm_health
 
 app = Flask(__name__)
 CORS(app)
@@ -32,6 +34,34 @@ def health_check():
         'timestamp': datetime.utcnow().isoformat(),
         'database': 'connected'
     })
+
+# LLM health check endpoint
+@app.route('/api/llm/health', methods=['GET'])
+def llm_health_check():
+    """Check LLM WebSocket service health"""
+    try:
+        # Run async health check in sync context
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        health_status = loop.run_until_complete(check_llm_health())
+        loop.close()
+        
+        return jsonify({
+            'success': True,
+            'llm_service': health_status,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'llm_service': {
+                'status': 'error',
+                'connected': False
+            },
+            'timestamp': datetime.utcnow().isoformat()
+        }), 500
 
 # ==================== USER APIS ====================
 
@@ -471,16 +501,17 @@ def send_chat_message():
         
         start_time = time.time()
         
-        # Create message
-        message = Message(
+        # Create user message
+        user_message = Message(
             session_id=session.id,
             user_id=user.id,
             message=message_text,
+            is_user=True,
             message_type=data.get('message_type', 'text'),
             message_metadata=data.get('metadata', {})
         )
         
-        request.db.add(message)
+        request.db.add(user_message)
         request.db.commit()
         
         # Check if advanced AI mode is enabled
@@ -491,10 +522,23 @@ def send_chat_message():
         ai_response = generate_ai_response(message_text, data.get('metadata', {}), use_advanced_ai)
         response_time = time.time() - start_time
         
-        # Update message with response
-        message.response = ai_response['content']
-        message.tokens_used = ai_response['tokens_used']
-        message.response_time = response_time
+        # Create AI response message
+        ai_message = Message(
+            session_id=session.id,
+            user_id=user.id,
+            message=ai_response['content'],
+            is_user=False,
+            message_type='text',
+            tokens_used=ai_response['tokens_used'],
+            response_time=response_time,
+            message_metadata={
+                'model': ai_response.get('model', 'unknown'),
+                'finish_reason': ai_response.get('finish_reason', 'completed'),
+                'advanced_ai': use_advanced_ai
+            }
+        )
+        
+        request.db.add(ai_message)
         
         # Update session
         session.updated_at = datetime.utcnow()
@@ -505,14 +549,15 @@ def send_chat_message():
             preview = message_text[:100] + '...' if len(message_text) > 100 else message_text
             chat_history.message_preview = preview
             chat_history.last_activity = datetime.utcnow()
-            chat_history.message_count += 1
+            chat_history.message_count += 2  # User message + AI response
         
         request.db.commit()
         
         return jsonify({
             'success': True,
             'data': {
-                'message': message.to_dict(),
+                'user_message': user_message.to_dict(),
+                'ai_message': ai_message.to_dict(),
                 'session_id': session.id,
                 'user_id': user.id,
                 'advanced_ai_enabled': use_advanced_ai
@@ -524,35 +569,36 @@ def send_chat_message():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 def generate_ai_response(message, metadata, use_advanced_ai=False):
-    """Generate AI response (placeholder implementation)"""
+    """Generate AI response using WebSocket LLM or fallback"""
     
-    # Enhanced responses when advanced AI mode is enabled
-    if use_advanced_ai:
-        responses = [
-            "I understand your question perfectly. Here's my detailed analysis...",
-            "Using advanced reasoning capabilities, I can provide you with a comprehensive answer...",
-            "With enhanced understanding of context, let me help you with...",
-            "Using my improved language model capabilities, I can offer you this insight...",
-            "Thank you for your message. With advanced AI features, I can tell you..."
-        ]
-        token_range = (150, 300)  # Higher token usage for advanced model
-    else:
-        responses = [
-            "I understand your question. Let me help you with that.",
-            "That's an interesting point. Here's what I think...",
-            "Based on your message, I would suggest...",
-            "I can definitely help you with this. Here's my response...",
-            "Thank you for your message. Let me provide you with some information..."
-        ]
-        token_range = (50, 150)  # Standard token usage
-    
-    response = random.choice(responses)
-    tokens_used = random.randint(*token_range)
-    
-    return {
-        'content': response,
-        'tokens_used': tokens_used
-    }
+    try:
+        # Prepare metadata for LLM
+        llm_metadata = {
+            'sql_mode': metadata.get('sql_mode', False),
+            'advanced_ai': use_advanced_ai,
+            'session_context': metadata.get('session_context', {}),
+            'user_preferences': metadata.get('user_preferences', {})
+        }
+        
+        # Try to use WebSocket LLM first
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        try:
+            response = loop.run_until_complete(send_to_llm(message, llm_metadata))
+            loop.close()
+            return response
+            
+        except Exception as llm_error:
+            print(f"LLM WebSocket error: {llm_error}")
+            # Fall back to local response
+            loop.close()
+            return generate_fallback_response(message, llm_metadata)
+            
+    except Exception as e:
+        print(f"Error in generate_ai_response: {e}")
+        # Ultimate fallback
+        return generate_fallback_response(message, metadata)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3001)

@@ -69,6 +69,7 @@ class Message(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     message = Column(Text, nullable=False)
     response = Column(Text)
+    is_user = Column(Boolean, default=True)  # True for user messages, False for AI responses
     message_type = Column(String(50), default='text')
     message_metadata = Column(JSON, default={})  # Renamed from 'metadata' to avoid SQLAlchemy conflict
     tokens_used = Column(Integer, default=0)
@@ -86,6 +87,7 @@ class Message(Base):
             'user_id': self.user_id,
             'message': self.message,
             'response': self.response,
+            'is_user': self.is_user,
             'message_type': self.message_type,
             'metadata': self.message_metadata,  # Return as 'metadata' for API compatibility
             'tokens_used': self.tokens_used,
