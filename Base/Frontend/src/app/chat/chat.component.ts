@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -205,7 +205,7 @@ interface ChatResponse {
   `,
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   @ViewChild('messageInput') messageInput!: ElementRef;
 
@@ -223,6 +223,8 @@ export class ChatComponent implements OnInit {
   showScrollToBottom: boolean = false;
   claudeSonnet4Enabled: boolean = true; // Enable Claude Sonnet 4
   dbConnected: boolean = true; // Database connection status
+  
+  private shouldScrollToBottom = false; // Track when to auto-scroll
   
   promptSuggestions: string[] = [
     "Show me all users from the database",
@@ -245,6 +247,14 @@ export class ChatComponent implements OnInit {
     
     // Load sessions from local storage immediately
     this.chatSessions = this.getLocalSessions();
+    this.shouldScrollToBottom = true; // Scroll after welcome message
+  }
+
+  ngAfterViewChecked() {
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom();
+      this.shouldScrollToBottom = false;
+    }
   }
 
   addWelcomeMessage() {
@@ -274,7 +284,8 @@ export class ChatComponent implements OnInit {
     };
 
     this.messages.push(userMessage);
-    this.scrollToBottom(); // Scroll after adding user message
+    this.shouldScrollToBottom = true; // Trigger auto-scroll
+    
     const messageText = this.currentMessage;
     this.currentMessage = '';
     this.isLoading = true;
@@ -314,7 +325,7 @@ export class ChatComponent implements OnInit {
           };
           this.messages.push(botMessage);
           this.isLoading = false;
-          this.scrollToBottom(); // Explicit scroll after adding bot message
+          this.shouldScrollToBottom = true; // Trigger auto-scroll for bot response
           
           // Save to local storage if no backend session
           this.saveMessageToLocalStorage(userMessage, botMessage);
@@ -330,7 +341,7 @@ export class ChatComponent implements OnInit {
           };
           this.messages.push(errorMessage);
           this.isLoading = false;
-          this.scrollToBottom(); // Explicit scroll after adding error message
+          this.shouldScrollToBottom = true; // Trigger auto-scroll for error message
           
           // Save to local storage even on error
           this.saveMessageToLocalStorage(userMessage, errorMessage);
@@ -349,6 +360,7 @@ export class ChatComponent implements OnInit {
       isSQL: false
     };
     this.messages.push(modeMessage);
+    this.shouldScrollToBottom = true; // Trigger auto-scroll
   }
 
   togglePrompts() {
@@ -365,6 +377,7 @@ export class ChatComponent implements OnInit {
     this.messages = [];
     this.currentSessionId = null;
     this.addWelcomeMessage();
+    this.shouldScrollToBottom = true; // Trigger auto-scroll after clearing
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -407,25 +420,24 @@ export class ChatComponent implements OnInit {
       if (this.messagesContainer && this.messagesContainer.nativeElement) {
         const element = this.messagesContainer.nativeElement;
         
-        // Force scroll with smooth behavior
-        element.scrollTo({
-          top: element.scrollHeight,
-          behavior: 'smooth'
+        // Use requestAnimationFrame for better timing
+        requestAnimationFrame(() => {
+          element.scrollTop = element.scrollHeight;
+          
+          // Additional scroll after content renders
+          setTimeout(() => {
+            if (this.messagesContainer && this.messagesContainer.nativeElement) {
+              element.scrollTop = element.scrollHeight;
+            }
+          }, 50);
+          
+          // Final scroll for dynamic content
+          setTimeout(() => {
+            if (this.messagesContainer && this.messagesContainer.nativeElement) {
+              element.scrollTop = element.scrollHeight;
+            }
+          }, 200);
         });
-        
-        // Backup immediate scroll
-        setTimeout(() => {
-          if (this.messagesContainer && this.messagesContainer.nativeElement) {
-            element.scrollTop = element.scrollHeight;
-          }
-        }, 100);
-        
-        // Final scroll attempt for dynamic content
-        setTimeout(() => {
-          if (this.messagesContainer && this.messagesContainer.nativeElement) {
-            element.scrollTop = element.scrollHeight;
-          }
-        }, 300);
       }
     } catch (err) {
       console.error('Error scrolling to bottom:', err);

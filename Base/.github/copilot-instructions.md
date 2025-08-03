@@ -2,19 +2,19 @@
 
 # Chatbot Application Instructions
 
-This is an Angular chatbot application with Node.js backend and SQL database support.
+This is an Angular chatbot application with Python Flask backend and SQL database support.
 
 ## Project Structure
 - **Frontend**: Angular 17+ with standalone components
-- **Backend**: Node.js with Express and SQLite
-- **Database**: SQLite with sample tables (users, products, messages)
+- **Backend**: Python Flask with SQLAlchemy ORM
+- **Database**: SQLite, PostgreSQL, or MySQL (configurable)
 
 ## Key Features
 - Tool icon for prompt suggestions (lightbulb)
 - Send response icon (send button)
 - SQL mode toggle for database queries
 - Real-time chat interface
-- Claude Sonnet 4 integration ready
+- Advanced AI integration with configurable modes
 
 ## Development Guidelines
 - Use Angular standalone components
@@ -24,9 +24,11 @@ This is an Angular chatbot application with Node.js backend and SQL database sup
 - Follow responsive design patterns
 
 ## Database Schema
-- users: id, name, email, created_at
-- products: id, name, price, category, stock, created_at
-- messages: id, user_id, message, response, created_at
+- users: id, name, email, avatar_url, status, preferences, created_at, updated_at
+- chat_sessions: id, user_id, title, status, created_at, updated_at
+- messages: id, session_id, user_id, message, response, message_type, tokens_used, response_time, created_at
+- chat_history: id, user_id, session_id, message_preview, message_count, last_activity, created_at
+- system_settings: id, key, value, description, category, created_at, updated_at
 
 ## Security Notes
 - Only SELECT queries allowed in SQL mode

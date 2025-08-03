@@ -1,280 +1,481 @@
-# Vaani AI - Intelligent Chatbot with SQL Database Support
+# AI Chatbot with SQLAlchemy Database Support
 
-A modern, responsive chatbot application built with Angular and Node.js, featuring AI-powered conversations, SQL database querying capabilities, and persistent chat history. Vaani AI provides a professional floating chat interface with advanced features for seamless user interaction.
+A modern, professional chatbot application with Angular frontend and Python Flask backend, featuring advanced AI integration and multi-database support.
 
-## 🌟 Features
+## 🚀 Features
 
-### Core Features
-- 🤖 **AI-Powered Chat**: Intelligent conversations with advanced language model integration
-- 🗄️ **SQL Database Support**: Direct database querying with safety controls (SELECT only)
-- 📱 **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
-- 💬 **Floating Chat Modal**: Professional, non-intrusive chat interface
-- 📝 **Chat History**: Persistent conversation storage and retrieval with session management
-- ⚡ **Real-time Messaging**: Instant responses with smooth animations and auto-scroll
+- **Advanced AI Integration** - Configurable AI modes with enhanced reasoning capabilities
+- **Multi-Database Support** - Easy switching between SQLite, PostgreSQL, and MySQL
+- **Modern UI** - Angular 17+ with Material Design components
+- **Real-time Chat** - Interactive messaging with typing indicators
+- **Tool Management** - Built-in tools panel with prompt suggestions
+- **Session Management** - Persistent chat sessions and history
+- **API-First Design** - Complete REST API for all operations
+- **Responsive Design** - Works seamlessly on desktop and mobile
 
-### Advanced Features
-- 🔧 **Tool Integration**: Easy access to database tools and prompt suggestions
-- 💡 **Smart Prompts**: Pre-built conversation starters for common queries
-- 🔄 **Session Management**: Multiple chat sessions with automatic saving to localStorage
-- 📊 **Message Analytics**: Track conversation count and history statistics
-- 🎨 **Modern UI/UX**: Clean, professional interface with Material Design principles
-- ⚙️ **Environment Configuration**: Flexible setup for different environments
-- 🌐 **WebSocket Integration**: Connect to internal LLM servers without API keys
+## 📋 Prerequisites
 
-## 🚀 Quick Start Database Support
+- **Python 3.11+** 
+- **Node.js 18+**
+- **npm or yarn**
 
-A modern Angular chatbot application with Node.js backend and SQLite database integration. Features include AI-powered conversations, SQL query capabilities, and a beautiful Material Design interface.
+## 🛠️ Installation & Setup
 
-## Features
-
-- 🤖 **AI Chatbot**: Intelligent conversation with context awareness
-- � **LLM WebSocket Integration**: Connect to Claude Sonnet 4 or other LLM providers
-- 📜 **Chat History**: Save and manage conversation sessions
-- �🗄️ **SQL Database Support**: Query database directly through chat interface
-- 💡 **Tool Icon**: Prompt suggestions with lightbulb icon
-- ➤ **Send Response Icon**: Material Design send button
-- 📱 **Responsive Design**: Works on desktop and mobile
-- 🎨 **Modern UI**: Glass morphism design with smooth animations
-- 🔒 **Secure**: SQL injection protection and input validation
-- 🌍 **Environment Configuration**: Configurable via .env file
-
-## Quick Start
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
-- Angular CLI (v17+)
-
-### Installation
-
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-2. **Set up environment variables**
-   Copy and edit the environment file:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` with your configuration:
-   ```properties
-   # Server Configuration
-   PORT=3001
-   CORS_ORIGIN=http://localhost:4200
-   
-   # Database Configuration
-   DB_PATH=./backend/chatbot.db
-   
-   # LLM WebSocket Configuration
-   LLM_WEBSOCKET_URL=ws://localhost:8080/chat
-   # No API key needed - using internal LLM server
-   LLM_MAX_TOKENS=4000
-   LLM_TEMPERATURE=0.7
-   
-   # Chat History Configuration
-   ENABLE_HISTORY=true
-   MAX_HISTORY_ITEMS=100
-   ```
-
-3. **Start the application**
-   ```bash
-   npm run dev
-   ```
-   This starts both:
-   - Angular frontend: http://localhost:4200
-   - Node.js backend: http://localhost:3001
-
-## 🎯 Usage
-
-### Basic Chat
-1. Open http://localhost:4200 in your browser
-2. Click the purple chat button (💬) in the bottom-right corner
-3. Start typing your message and press Enter or click Send
-
-### SQL Database Queries
-1. Click the "SQL" button in the chat header to enable SQL mode
-2. Ask questions about the database or write SQL queries
-3. The chatbot will safely execute SELECT queries only
-
-### Chat History
-1. Click the "History" button to view previous conversations
-2. Click on any session to load that conversation
-3. Use "New" button to start a fresh conversation
-
-### Prompt Suggestions
-1. Click the lightbulb icon (💡) in the input area
-2. Choose from pre-built conversation starters
-3. Perfect for exploring the chatbot's capabilities
-
-## 🏗️ Project Structure
-
-```
-vaani-ai-chatbot/
-├── src/                          # Angular frontend
-│   ├── app/
-│   │   ├── landing/             # Landing page component
-│   │   ├── chat/                # Main chat interface
-│   │   └── services/            # Angular services
-│   ├── styles.scss              # Global styles
-│   └── main.ts                  # Bootstrap file
-├── backend/                     # Node.js backend
-│   ├── server.js               # Express server
-│   ├── chat-history.js         # Chat history management
-│   ├── llm-websocket.js        # LLM integration
-│   └── chatbot.db              # SQLite database
-├── .env                        # Environment variables
-├── package.json               # Dependencies and scripts
-└── README.md                  # This file
-```
-
-6. **Open your browser** and navigate to `http://localhost:4200`
-
-## Development
-
-### Run both frontend and backend together:
+### 1. Clone the Repository
 ```bash
+git clone <repository-url>
+cd Chatbot/Base
+```
+
+### 2. Backend Setup (Python Flask)
+```bash
+# Create and activate virtual environment
+python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # macOS/Linux
+
+# Install Python dependencies
+cd backend
+pip install -r requirements.txt
+
+# Configure environment (optional)
+cp .env.example .env
+# Edit .env with your database settings
+```
+
+### 3. Frontend Setup (Angular)
+```bash
+# Install Angular dependencies
+cd Frontend
+npm install
+```
+
+## 🚀 Running the Application
+
+### Start Backend Server
+```bash
+cd backend
+python app.py
+# Backend runs on http://localhost:3001
+```
+
+### Start Frontend Server
+```bash
+cd Frontend
+ng serve
+# Frontend runs on http://localhost:4200
+```
+
+### Quick Start (Both Servers)
+```bash
+# From root directory
 npm run dev
 ```
 
-### Available Scripts
-- `npm start` - Start Angular dev server
-- `npm run server` - Start Node.js backend
-- `npm run dev` - Start both frontend and backend
-- `npm run build` - Build for production
-- `npm test` - Run tests
-- `npm run lint` - Run linting
+## 🗄️ Database Configuration
 
-## Project Structure
+Switch databases by updating `DATABASE_URL` in `backend/.env`:
 
-```
-src/
-├── app/
-│   ├── chat/                 # Chat component
-│   │   ├── chat.component.ts
-│   │   └── chat.component.scss
-│   ├── app.component.ts      # Main app component
-│   └── app.component.scss
-├── styles.scss               # Global styles
-└── index.html               # Main HTML file
-
-backend/
-├── server.js                # Express server
-└── chatbot.db               # SQLite database (created automatically)
+### SQLite (Default)
+```env
+DATABASE_URL=sqlite:///./chatbot.db
 ```
 
-## Features Overview
+### PostgreSQL
+```env
+DATABASE_URL=postgresql://username:password@localhost:5432/chatbot
+```
 
-### Chat Interface
-- **Tool Icon** (💡): Click to show/hide prompt suggestions
-- **History Icon** (📜): View and manage chat sessions
-- **New Session** (+): Create a new chat session
-- **Send Icon** (➤): Send messages with Enter key or click
-- **SQL Mode**: Toggle to enable database querying
-- **Clear Chat**: Reset conversation history
+### MySQL
+```env
+DATABASE_URL=mysql+pymysql://username:password@localhost:3306/chatbot
+```
 
-### Chat History
-- **Session Management**: Create, load, and delete chat sessions
-- **Search History**: Find specific conversations or messages
-- **Automatic Saving**: Messages are automatically saved to sessions
-- **Session Persistence**: Resume conversations from where you left off
+The database tables are created automatically on first run.
 
-### LLM Integration
-- **WebSocket Connection**: Real-time communication with LLM providers
-- **Fallback Mode**: Continues working even if LLM service is unavailable
-- **Configurable**: Set model, temperature, max tokens via environment variables
-- **Auto-reconnect**: Automatically reconnects if connection is lost
+## 📚 API Documentation
 
-### SQL Database
-The application includes sample tables:
-- **users**: User information with id, name, email
-- **products**: Product catalog with pricing and inventory
-- **messages**: Chat history storage
-- **chat_sessions**: Session management for history
-- **chat_history**: Detailed conversation history
+Base URL: `http://localhost:3001`
 
-### Sample SQL Queries
-- `SELECT * FROM users;`
-- `SELECT * FROM products WHERE price > 100;`
-- `SELECT COUNT(*) FROM users;`
+### Health Check
 
-## API Endpoints
+#### GET `/health`
+Check if the backend is running and database is connected.
 
-### Chat Endpoints
-- `POST /api/chat` - General chat conversations (supports sessionId)
-- `POST /api/sql-query` - SQL database queries
-- `GET /api/health` - Server health check
-
-### History Endpoints
-- `GET /api/history/sessions` - Get all chat sessions
-- `GET /api/history/sessions/:id` - Get specific session history
-- `POST /api/history/sessions` - Create new chat session
-- `DELETE /api/history/sessions/:id` - Delete chat session
-- `GET /api/history/search` - Search chat history
-- `GET /api/history/stats` - Get history statistics
-
-### Database Endpoints
-- `GET /api/schema` - Database schema information
-
-## Security
-
-- Only SELECT queries allowed in SQL mode
-- Input validation and sanitization
-- CORS protection
-- SQL injection prevention
-
-## Customization
-
-### Adding New Database Tables
-1. Modify `backend/server.js`
-2. Add table creation in the `db.serialize()` block
-3. Update the schema endpoint if needed
-
-### Extending Chat Responses
-Modify the `generateChatResponse()` function in `backend/server.js` to add custom response logic.
-
-### UI Customization
-- Edit `src/styles.scss` for global styles
-- Modify component SCSS files for specific styling
-- Update color scheme in CSS custom properties
-
-## Claude Sonnet 4 Integration
-
-The application is designed to integrate with Claude Sonnet 4. To enable:
-
-1. Add your API credentials to environment variables
-2. Update the chat service to use Claude API
-3. Modify response handling for Claude-specific features
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Port already in use**: Change ports in package.json scripts
-2. **Database not created**: Check file permissions in backend folder
-3. **CORS errors**: Verify backend server is running on port 3001
-
-### Development Tips
-
-- Use browser dev tools to debug frontend issues
-- Check Node.js console for backend errors
-- SQLite database file is created automatically on first run
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details
+**Response:**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2025-08-03T12:00:00.000000",
+  "database": "connected"
+}
+```
 
 ---
 
-Built with ❤️ using Angular, Node.js, and SQLite
+### Chat API
+
+#### POST `/api/chat/send`
+Send a message to the chatbot and get an AI response.
+
+**Request Body:**
+```json
+{
+  "message": "Hello, how can you help me?",
+  "user_email": "user@example.com",
+  "user_name": "John Doe",
+  "session_id": 1,
+  "message_type": "text",
+  "metadata": {}
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "message": {
+      "id": 1,
+      "session_id": 1,
+      "user_id": 1,
+      "message": "Hello, how can you help me?",
+      "response": "I understand your question. Let me help you with that.",
+      "message_type": "text",
+      "tokens_used": 75,
+      "response_time": 0.45,
+      "created_at": "2025-08-03T12:00:00.000000"
+    },
+    "session_id": 1,
+    "user_id": 1,
+    "advanced_ai_enabled": true
+  }
+}
+```
+
+---
+
+### User Management
+
+#### GET `/api/users`
+Get list of users with pagination and search.
+
+**Query Parameters:**
+- `page` (int): Page number (default: 1)
+- `limit` (int): Items per page (default: 10)
+- `search` (string): Search term for name/email
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "avatar_url": null,
+      "status": "active",
+      "preferences": {},
+      "created_at": "2025-08-03T12:00:00.000000",
+      "updated_at": "2025-08-03T12:00:00.000000"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 1,
+    "pages": 1
+  }
+}
+```
+
+#### POST `/api/users`
+Create a new user.
+
+**Request Body:**
+```json
+{
+  "name": "Jane Smith",
+  "email": "jane@example.com",
+  "avatar_url": "https://example.com/avatar.jpg",
+  "preferences": {"theme": "dark"}
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 2,
+    "message": "User created successfully"
+  }
+}
+```
+
+#### GET `/api/users/{user_id}`
+Get user by ID.
+
+#### PUT `/api/users/{user_id}`
+Update user information.
+
+#### DELETE `/api/users/{user_id}`
+Delete a user.
+
+---
+
+### Session Management
+
+#### GET `/api/sessions`
+Get chat sessions for a user.
+
+**Query Parameters:**
+- `user_id` (required): User ID
+- `page` (int): Page number
+- `limit` (int): Items per page
+- `status` (string): Filter by status (active/inactive/all)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "title": "Chat Session 1",
+      "status": "active",
+      "message_count": 5,
+      "created_at": "2025-08-03T12:00:00.000000",
+      "updated_at": "2025-08-03T12:30:00.000000"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 1,
+    "pages": 1
+  }
+}
+```
+
+#### POST `/api/sessions`
+Create a new chat session.
+
+**Request Body:**
+```json
+{
+  "user_id": 1,
+  "title": "New Chat Session"
+}
+```
+
+#### GET `/api/sessions/{session_id}`
+Get session details, optionally with messages.
+
+**Query Parameters:**
+- `include_messages` (boolean): Include messages in response
+
+---
+
+### Messages
+
+#### GET `/api/messages`
+Get messages with filtering and pagination.
+
+**Query Parameters:**
+- `session_id` (int): Filter by session
+- `user_id` (int): Filter by user
+- `page` (int): Page number
+- `limit` (int): Items per page
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "session_id": 1,
+      "user_id": 1,
+      "message": "Hello!",
+      "response": "Hi there! How can I help you?",
+      "message_type": "text",
+      "tokens_used": 45,
+      "response_time": 0.23,
+      "created_at": "2025-08-03T12:00:00.000000"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 50,
+    "total": 1,
+    "pages": 1
+  }
+}
+```
+
+#### POST `/api/messages`
+Send a message (alternative to `/api/chat/send`).
+
+---
+
+### System Settings
+
+#### GET `/api/settings`
+Get all system settings or filter by category.
+
+**Query Parameters:**
+- `category` (string): Filter by category
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "key": "enable_advanced_ai",
+      "value": "true",
+      "description": "Enable advanced AI features",
+      "category": "ai",
+      "created_at": "2025-08-03T12:00:00.000000",
+      "updated_at": "2025-08-03T12:00:00.000000"
+    }
+  ]
+}
+```
+
+#### GET `/api/settings/{key}`
+Get specific setting by key.
+
+#### PUT `/api/settings/{key}`
+Update a setting.
+
+**Request Body:**
+```json
+{
+  "value": "false",
+  "description": "Updated description"
+}
+```
+
+---
+
+## 🎨 Frontend Features
+
+### Chat Interface
+- **Interactive Chat**: Real-time messaging with AI responses
+- **Tool Panel**: Access to settings and prompt suggestions
+- **Session History**: View and manage chat sessions
+- **Responsive Design**: Works on all screen sizes
+
+### Key Components
+- `app.component.ts` - Main application component
+- `chat.component.ts` - Chat interface with AI integration
+- `landing.component.ts` - Landing page with chat trigger
+- `history.service.ts` - Chat history management
+
+### Running Frontend
+```bash
+cd Frontend
+ng serve --port 4200
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+#### Backend (`backend/.env`)
+```env
+DATABASE_URL=sqlite:///./chatbot.db
+ENABLE_ADVANCED_AI=true
+LLM_MAX_TOKENS=4000
+LLM_TEMPERATURE=0.7
+FLASK_ENV=development
+FLASK_DEBUG=true
+```
+
+#### Root (`.env`)
+```env
+ANGULAR_PORT=4200
+BACKEND_PORT=3001
+BACKEND_URL=http://localhost:3001
+DATABASE_URL=sqlite:///./chatbot.db
+ENABLE_ADVANCED_AI=true
+```
+
+## 📊 Database Schema
+
+The application uses SQLAlchemy models with automatic migration:
+
+### Tables
+- **users**: User accounts and preferences
+- **chat_sessions**: Individual chat sessions
+- **messages**: Chat messages and AI responses
+- **chat_history**: Session history and metadata
+- **system_settings**: Configuration and feature toggles
+
+### Reset Database
+```bash
+cd backend
+python reset_db.py
+```
+
+## 🚀 Deployment
+
+### Production Setup
+1. Set `FLASK_ENV=production` in backend/.env
+2. Use a production WSGI server (gunicorn, uWSGI)
+3. Configure production database (PostgreSQL recommended)
+4. Build Angular for production: `ng build --prod`
+5. Serve Angular build files via web server (nginx, Apache)
+
+### Docker Support
+The application is ready for containerization with separate containers for frontend and backend.
+
+## 🛠️ Development
+
+### Project Structure
+```
+Base/
+├── Frontend/                 # Angular application
+│   ├── src/app/             # Angular components
+│   ├── angular.json         # Angular configuration
+│   └── package.json         # Frontend dependencies
+├── backend/                 # Python Flask backend
+│   ├── app.py              # Main Flask application
+│   ├── database.py         # SQLAlchemy models
+│   ├── requirements.txt    # Python dependencies
+│   └── .env               # Backend configuration
+├── package.json            # Root scripts and Angular deps
+├── .env                   # General configuration
+└── README.md             # This file
+```
+
+### Available Scripts
+```bash
+npm run start      # Start Angular frontend
+npm run server     # Start Python backend
+npm run dev        # Start both frontend and backend
+npm run build      # Build Angular for production
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes
+4. Run tests and ensure code quality
+5. Commit changes: `git commit -m 'Add feature'`
+6. Push to branch: `git push origin feature-name`
+7. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+**Built with ❤️ using Angular, Python Flask, and SQLAlchemy**

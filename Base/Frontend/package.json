@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Angular Chatbot with SQL Database Support",
   "scripts": {
-    "ng": "cd Frontend && ng",
-    "start": "cd Frontend && ng serve",
-    "build": "cd Frontend && ng build",
-    "server": "cd backend && python app.py",
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "server": "node backend/server.js",
     "dev": "concurrently \"npm run server\" \"npm run start\"",
-    "test": "cd Frontend && ng test",
-    "lint": "cd Frontend && ng lint",
-    "e2e": "cd Frontend && ng e2e"
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
   "dependencies": {
     "@angular/animations": "^17.0.0",
@@ -21,8 +21,14 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
     "rxjs": "~7.8.0",
+    "sqlite3": "^5.1.6",
     "tslib": "^2.3.0",
+    "ws": "^8.13.0",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
