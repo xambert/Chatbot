@@ -556,17 +556,78 @@ def send_chat_message():
         return jsonify({
             'success': True,
             'data': {
-                'user_message': user_message.to_dict(),
-                'ai_message': ai_message.to_dict(),
+                'message': {
+                    'id': ai_message.id,
+                    'message': message_text,
+                    'response': ai_response['content'],
+                    'tokens_used': ai_response['tokens_used'],
+                    'response_time': response_time,
+                    'created_at': ai_message.created_at.isoformat()
+                },
                 'session_id': session.id,
                 'user_id': user.id,
-                'advanced_ai_enabled': use_advanced_ai
+                'claude_sonnet_4_enabled': use_advanced_ai
             }
         }), 201
         
     except Exception as e:
         request.db.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
+
+# ==================== HISTORY APIS ====================
+
+@app.route('/api/history/stats', methods=['GET'])
+def get_history_stats():
+    """Get history statistics for a user"""
+    try:
+        user_id = request.args.get('userId', 'anonymous')
+        
+        # Get total sessions and messages for user
+        total_sessions = request.db.query(ChatSession).filter_by(user_id=user_id).count()
+        total_messages = request.db.query(Message).join(ChatSession).filter(ChatSession.user_id == user_id).count()
+        
+        return jsonify({
+            'success': True,
+            'enabled': True,
+            'userId': user_id,
+            'stats': {
+                'total_sessions': total_sessions,
+                'total_messages': total_messages
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e), 'enabled': True}), 500
+
+@app.route('/api/history/sessions', methods=['GET'])
+def get_history_sessions():
+    """Get chat sessions for a user"""
+    try:
+        user_id = request.args.get('userId', 'anonymous')
+        
+        # Get sessions for user
+        sessions = request.db.query(ChatSession).filter_by(user_id=user_id).order_by(ChatSession.updated_at.desc()).limit(50).all()
+        
+        sessions_data = []
+        for session in sessions:
+            message_count = request.db.query(Message).filter_by(session_id=session.id).count()
+            sessions_data.append({
+                'id': session.id,
+                'session_name': session.title or f'Chat {session.id}',
+                'user_id': session.user_id,
+                'created_at': session.created_at.isoformat(),
+                'updated_at': session.updated_at.isoformat(),
+                'is_active': session.status == 'active',
+                'message_count': message_count,
+                'last_message_at': session.updated_at.isoformat()
+            })
+        
+        return jsonify({
+            'success': True,
+            'sessions': sessions_data,
+            'userId': user_id
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e), 'sessions': []}), 500
 
 def generate_ai_response(message, metadata, use_advanced_ai=False):
     """Generate AI response using WebSocket LLM or fallback"""
