@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Chatbot Test Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 24px; }
+    h1 { text-align: center; color: #333; }
+    iframe { display: block; margin: 24px auto; border: none; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
+    .desc { text-align: center; color: #666; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Customer Chatbot Demo</h1>
+    <div class="desc">This page simulates a customer environment embedding your chatbot via iframe.</div>
+    <form id="customerForm" style="margin-top:24px;text-align:center;">
+      <input type="text" id="customerName" placeholder="Your Name" style="padding:8px;width:180px;margin-right:8px;border-radius:4px;border:1px solid #ccc;" required>
+      <input type="email" id="customerEmail" placeholder="Your Email" style="padding:8px;width:180px;margin-right:8px;border-radius:4px;border:1px solid #ccc;" required>
+      <button type="submit" style="padding:8px 18px;background:#1976d2;color:#fff;border:none;border-radius:4px;cursor:pointer;">Start Chat</button>
+    </form>
+    <div id="formError" style="color:#d32f2f;text-align:center;margin-top:8px;display:none;"></div>
+  </div>
+
+  <!-- Floating Chat Icon -->
+  <button id="chatIcon" title="Open Chatbot" style="position:fixed;bottom:32px;right:32px;width:64px;height:64px;border-radius:50%;background:#1976d2;color:#fff;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.15);cursor:pointer;z-index:1000;display:flex;align-items:center;justify-content:center;font-size:2rem;">
+    <span style="font-family: 'Material Icons', Arial, sans-serif; font-size: 2.5rem;">💬</span>
+  </button>
+
+  <!-- Chatbot Modal Popup -->
+  <div id="chatModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);z-index:1001;align-items:center;justify-content:center;">
+    <div style="position:relative;width:420px;max-width:95vw;margin:auto;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.18);padding:0;">
+      <button id="closeChat" title="Close Chatbot" style="position:absolute;top:8px;right:8px;background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:#888;">&times;</button>
+      <iframe id="chatbotFrame" src="http://localhost:3001/" width="400" height="600" allow="clipboard-write;" title="Chatbot" style="border:none;border-radius:8px;display:block;margin:24px auto;"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const chatIcon = document.getElementById('chatIcon');
+    const chatModal = document.getElementById('chatModal');
+    const closeChat = document.getElementById('closeChat');
+    const chatbotFrame = document.getElementById('chatbotFrame');
+    const customerForm = document.getElementById('customerForm');
+    const formError = document.getElementById('formError');
+    let customerName = '';
+    let customerEmail = '';
+
+    // Show chat icon only after form is submitted
+    chatIcon.style.display = 'none';
+
+    customerForm.onsubmit = function(e) {
+      e.preventDefault();
+      customerName = document.getElementById('customerName').value.trim();
+      customerEmail = document.getElementById('customerEmail').value.trim();
+      if (!customerName || !customerEmail) {
+        formError.textContent = 'Please enter your name and a valid email.';
+        formError.style.display = 'block';
+        return;
+      }
+      formError.style.display = 'none';
+      chatIcon.style.display = 'flex';
+      customerForm.style.display = 'none';
+    };
+
+    chatIcon.onclick = function() {
+      // Inject customer details into iframe via query params
+      const url = `http://localhost:3001/?name=${encodeURIComponent(customerName)}&email=${encodeURIComponent(customerEmail)}`;
+      chatbotFrame.src = url;
+      chatModal.style.display = 'flex';
+    };
+    closeChat.onclick = function() {
+      chatModal.style.display = 'none';
+    };
+    chatModal.onclick = function(e) {
+      if (e.target === chatModal) chatModal.style.display = 'none';
+    };
+  </script>
+</body>
+</html>

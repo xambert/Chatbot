@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError
 from database import init_database, get_db, User, ChatSession, Message, ChatHistory, SystemSettings
@@ -9,7 +9,7 @@ import random
 import asyncio
 from llm_websocket import send_to_llm, generate_fallback_response, check_llm_health
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)
 
 # Initialize database
@@ -660,6 +660,20 @@ def generate_ai_response(message, metadata, use_advanced_ai=False):
         print(f"Error in generate_ai_response: {e}")
         # Ultimate fallback
         return generate_fallback_response(message, metadata)
+
+
+# Serve Angular index.html for root
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+# Serve static files and fallback to index.html for unknown routes
+@app.route('/<path:path>')
+def serve_static(path):
+    try:
+        return send_from_directory(app.static_folder, path)
+    except:
+        return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3001)
